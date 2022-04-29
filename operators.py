@@ -1,45 +1,33 @@
-def up(self):
-    row_blank = self.row_blank
-    col_blank = self.col_blank
-    state=self.initial_state
+import copy
+def up(state,row_blank,col_blank):
+    b=copy.deepcopy(state)
     if(row_blank>0):
-        print('swaping')
-        state[row_blank][col_blank],state[row_blank-1][col_blank] = \
-        state[row_blank-1][col_blank],state[row_blank][col_blank]
-        self.row_blank-=1
-        return 1
+        b[row_blank][col_blank] = state[row_blank-1][col_blank]
+        b[row_blank-1][col_blank] = state[row_blank][col_blank]
+        return b
     else:
         return -1
-def down(self):
-    row_blank = self.row_blank
-    col_blank = self.col_blank
-    state=self.initial_state
+def down(state,row_blank,col_blank):
+    b=copy.deepcopy(state)
     if(row_blank<len(state)-1):
-        state[row_blank][col_blank],state[row_blank+1][col_blank] = \
-        state[row_blank+1][col_blank],state[row_blank][col_blank]
-        self.row_blank+=1
-        return 1
+        b[row_blank][col_blank]= state[row_blank+1][col_blank]
+        b[row_blank+1][col_blank] = state[row_blank][col_blank]
+        return b
     else:
         return -1
-def left(self):
-    row_blank = self.row_blank
-    col_blank = self.col_blank
-    state=self.initial_state
+def left(state,row_blank,col_blank):
+    b=copy.deepcopy(state)
     if(col_blank>0):
-        state[row_blank][col_blank],state[row_blank][col_blank-1] = \
-        state[row_blank][col_blank-1],state[row_blank][col_blank]
-        self.col_blank-=1
-        return 1
+        b[row_blank][col_blank] = state[row_blank][col_blank]
+        b[row_blank][col_blank-1] = state[row_blank][col_blank-1]
+        return b
     else:
         return -1
-def right(self):
-    row_blank = self.row_blank
-    col_blank = self.col_blank
-    state=self.initial_state
+def right(state,row_blank,col_blank):
+    b=copy.deepcopy(state)
     if(col_blank<len(state[0])-1):
-        state[row_blank][col_blank],state[row_blank][col_blank+1] = \
-        state[row_blank][col_blank+1],state[row_blank][col_blank]
-        self.col_blank+=1
-        return 1
+        b[row_blank][col_blank] = state[row_blank][col_blank]
+        b[row_blank][col_blank+1] = state[row_blank][col_blank+1]
+        return b
     else:
         return -1
