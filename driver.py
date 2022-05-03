@@ -22,52 +22,117 @@ class problem:
 
     #create menu to test test_cases
     def menu(self):
-        while(True):
-            algo=-1
-            t=-1
-            custom=None
-            print('Select a test_case you would like to use: ')
-            for i in range(len(self.sample_states)):
-                print(f'{i+1}: {self.sample_states[i][0]}')
-            print('7: Custom <e.g. 123456780>')
-            t= int(input())
-            if(t in range(1,8)):
-                #not checking for invalid inputs
-                if t == 7:
-                    print(f'input test_case: ',end='')
-                    custom=str(input())
-                print('Please select search algorithm: ')
-                print('1) Uniform-Cost Search')
-                print('2) A* Search with Misplaced Tile Heuristic')
-                print('3) A* Search with Eucledian Distance Heuristic')
-                algo=int(input())
-                print('Press any key to continue...')
-                input()
-            if(algo in range(1,4)):
-                #User selected one of the sample test-cases
-                if t != 7:
-                    k= node.node(self.sample_states[t-1][1])
-                #User Selected custom user test-case
+        algo=-1
+        t=-1
+        custom=None
+        print('Select a test_case you would like to use: ')
+        for i in range(len(self.sample_states)):
+            print(f'{i+1}: {self.sample_states[i][0]}')
+        print('7: Custom <e.g. 123456780>')
+        t= int(input())
+        if(t in range(1,8)):
+            #not checking for invalid inputs
+            if t == 7:
+                print(f'input test_case: ',end='')
+                custom=str(input())
+            print('Please select search algorithm: ')
+            print('1) Uniform-Cost Search')
+            print('2) A* Search with Misplaced Tile Heuristic')
+            print('3) A* Search with Eucledian Distance Heuristic')
+            algo=int(input())
+            print('Press any key to continue...')
+            input()
+        if(algo in range(1,4)):
+            #User selected one of the sample test-cases
+            if t != 7:
+                k= node.node(self.sample_states[t-1][1])
+            #User Selected custom user test-case
+            else:
+                custom_state= copy.deepcopy(self.initial_state)
+                #just replace initial state entries with custom values
+                for r,row in enumerate(custom_state):
+                    for j,col in enumerate(row):
+                        custom_state[r][j]=int(custom[:1])
+                        custom =custom[1:]
+                k=node.node(custom_state)
+            #Trivial Case = Already Solved
+            if t== 1:
+                k.trace_path()
+            #Run Algorithm
+            else:
+                #NF default = 10, change this for harder problems
+                solutions=k.run_algorithm(10,self.search_algorithms[algo-1])
+                if len(solutions):
+                    solutions=solutions.pop(0)[1]
+                    solutions.trace_path()
                 else:
-                    custom_state= copy.deepcopy(self.initial_state)
-                    #just replace initial state entries with custom values
-                    for r,row in enumerate(custom_state):
-                        for j,col in enumerate(row):
-                            custom_state[r][j]=int(custom[:1])
-                            custom =custom[1:]
-                    k=node.node(custom_state)
-                #Trivial Case = Already Solved
-                if t== 1:
-                    k.trace_path()
-                #Run Algorithm
-                else:
-                    #NF default = 10, change this for harder problems
-                    solutions=k.run_algorithm(10,self.search_algorithms[algo-1])
-                    if len(solutions):
-                        solutions=solutions.pop(0)[1]
-                        solutions.trace_path()
-                    else:
-                        print('Solution Not Found: try changing the nf in source code')
+                    print('Solution Not Found: try changing the nf in source code or not intial_state is impossible')
 
 p=problem()
 p.menu()
+
+#-----------Example solutions for 4)doable with nf = 10-----------
+
+#Uniform Cost Search
+# depth: 4
+# expanded: 586
+# max nodes in queue: 333
+
+#Misplaced Tile
+# depth: 4
+# expanded: 574
+# max nodes in queue: 325
+
+#Eucledian Distance
+# depth: 4
+# expanded: 574
+# max nodes in queue: 325
+
+# =>intial_state
+# ----------------------------
+# |    *   |    1   |    2   |
+# ----------------------------
+# |    4   |    5   |    3   |
+# ----------------------------
+# |    7   |    8   |    6   |
+# ----------------------------
+
+
+# =>right
+# ----------------------------
+# |    1   |    *   |    2   |
+# ----------------------------
+# |    4   |    5   |    3   |
+# ----------------------------
+# |    7   |    8   |    6   |
+# ----------------------------
+
+
+# =>right
+# ----------------------------
+# |    1   |    2   |    *   |
+# ----------------------------
+# |    4   |    5   |    3   |
+# ----------------------------
+# |    7   |    8   |    6   |
+# ----------------------------
+
+
+# =>down
+# ----------------------------
+# |    1   |    2   |    3   |
+# ----------------------------
+# |    4   |    5   |    *   |
+# ----------------------------
+# |    7   |    8   |    6   |
+# ----------------------------
+
+
+# =>down
+# ----------------------------
+# |    1   |    2   |    3   |
+# ----------------------------
+# |    4   |    5   |    6   |
+# ----------------------------
+# |    7   |    8   |    *   |
+# ----------------------------

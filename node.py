@@ -5,18 +5,27 @@ operators = [op.up,op.down,op.left,op.right]
 answers=[]
 goal_state=[[1,2,3],[4,5,6], [7,8,None]]
 class node:
-    def __init__(self,state,parent=None,last_action='intial_state',depth=0,cost=0):
+    def __init__(self,state,parent=None,last_action='intial_state',depth=0,cost=0,total_nodes=1,visited_set=set()):
         self.state=state
         self.parent=parent
         self.children=[]
         self.last_action=last_action
         self.depth=depth
         self.cost=cost
+        node.total_nodes=total_nodes
+        node.visited_set=visited_set
         #print(f'child created from:{last_action}')    
     #creates tree and runs algorithm at the same time
     #Returns a priority queue of goal states
     def run_algorithm(self,nf=10,heuristic=heuristics.uniform_cost):
         if(nf > 0):
+            #add current state to visited_set
+            
+            #add node to visited set
+            if tuple(map(tuple,self.state)) not in self.visited_set:
+                self.visited_set.add(tuple(map(tuple,self.state)))
+                #print(f'added:{tuple(map(tuple,self.state))}')
+            
             #Create a Priority Queue
             q=[]
             row_blank,col_blank = helper.find_index_blank(self.state)
@@ -29,11 +38,13 @@ class node:
                     new_state=-1
                 else:
                     new_state=operator(self.state,row_blank,col_blank)
-                    if(new_state!=-1):
-                        child=node(state=new_state,parent=self,last_action=operator.__name__,depth=self.depth+1,cost=self.depth+heuristic(new_state,goal_state))
+                    #check if state is already visited
+                    if(new_state!=-1 and tuple(map(tuple,new_state)) not in self.visited_set):
+                        child=node(state=new_state,parent=self,last_action=operator.__name__,depth=self.depth+1,cost=self.depth+heuristic(new_state,goal_state),total_nodes=self.total_nodes+1,visited_set=self.visited_set)
                         self.children.append(child)
                         q.append((child.cost,child))
             
+            #Check if state is a goal_state
             q=sorted(q, key = lambda x:x[0])
             while len(q):
                 c=q.pop(0)
@@ -47,6 +58,7 @@ class node:
 
         return sorted(answers, key = lambda x:x[0])
 
+    #prints the state in a readable way
     def print_pretty(self):
         print('----------------------------')
         for row in self.state:
@@ -56,10 +68,11 @@ class node:
             print('----------------------------')
         print('\n')
 
+    #traces the answer from a goal state
     def trace_path(self):
         stack = []
         temp=self
-        print(f'total steps: {self.depth}\n')
+        print(f'depth: {self.depth}\nexpanded: {self.total_nodes}\nmax nodes in queue: {len(self.visited_set)}\n')
         total_nodes=1
         while(temp):
             stack.append(temp)
