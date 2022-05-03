@@ -52,7 +52,10 @@ class problem:
                 #just replace initial state entries with custom values
                 for r,row in enumerate(custom_state):
                     for j,col in enumerate(row):
-                        custom_state[r][j]=int(custom[:1])
+                        if(int(custom[:1])!=0):
+                            custom_state[r][j]=int(custom[:1])
+                        else:
+                            custom_state[r][j]=None
                         custom =custom[1:]
                 k=node.node(custom_state)
             #Trivial Case = Already Solved
@@ -61,7 +64,7 @@ class problem:
             #Run Algorithm
             else:
                 #NF default = 10, change this for harder problems
-                solutions=k.run_algorithm(10,self.search_algorithms[algo-1])
+                solutions=k.run_algorithm(25,self.search_algorithms[algo-1])
                 if len(solutions):
                     solutions=solutions.pop(0)[1]
                     solutions.trace_path()

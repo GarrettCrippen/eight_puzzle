@@ -77,9 +77,12 @@ class node:
         while(temp):
             stack.append(temp)
             temp=temp.parent
+        
         while(len(stack)):
             step = stack.pop()
-            print(f'=>{step.last_action}')
+            print(f'parent:{hex(id(step.parent))} ')
+            print(f'child:{hex(id(step))}')
+            print(f'move:{step.last_action}')
             step.print_pretty()
 
 
